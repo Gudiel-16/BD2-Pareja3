@@ -1,4 +1,5 @@
 from colorama import init, Back, Fore, Style
+from respaldo import crear_respaldo
 import getpass
 
 init()
@@ -78,7 +79,7 @@ def menu_usuario():
         elif opcion == "4":
             menu_crud()
         elif opcion == "5":
-            print("Realizar respaldo")
+            menu_respaldo()
         elif opcion == "6":
             print("Ver respaldos")
         elif opcion == "7":
@@ -115,6 +116,9 @@ def menu_crud():
             break
         else:
             print("\n", Back.RED + Fore.WHITE, "Por favor, ingrese una opción válida.", Style.RESET_ALL)
+
+def menu_respaldo():
+    crear_respaldo(usuario_logueado, password_usuario_logueado)
     
 def main():
 
