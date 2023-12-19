@@ -40,11 +40,14 @@ def iniciar_secion():
         password_usuario_logueado = password
         rol_usuario_logueado = si_existe_usuario_regresa_rol
 
-        print("\nGUARDAR LOG, inicio de sesion exitoso")
+        llamar_insertar_registro_actividad(usuario, "LOGIN", "Inicio de sesion exitoso.")
+        print("\n", Back.GREEN + Fore.WHITE, "Inicio de sesion exitoso", Style.RESET_ALL) 
 
         menu_usuario()
     else:
-        print("\nGUARDAR LOG, user no existe")
+        #usuario, accion, detalles
+        llamar_insertar_registro_actividad(usuario, "LOGIN", "Credenciales incorrectas")
+        print("\n", Back.RED + Fore.WHITE, "Nombre de usuario o password incorrecto", Style.RESET_ALL) 
 
 def registar_usuario():
 
@@ -60,10 +63,11 @@ def registar_usuario():
         if(verificar_si_username_existe_en_db(usuario_admin, password_admin, nombre_usuario) == False):
             crear_y_registrar_usuario_en_db(usuario_admin, password_admin, nombre_usuario, password_usuario, rol_usuario)
             #usuario, accion, detalles
-            llamar_insertar_registro_actividad(usuario_logueado, "INSERT", "Se registro nuevo usuario")
-            print("\nGUARDAR LOG, usuario guardado exitosamente")
+            llamar_insertar_registro_actividad(usuario_admin, "INSERT", "Se registro nuevo usuario")
+            print("\n", Back.GREEN + Fore.WHITE, "Usuario registrado exitosamente", Style.RESET_ALL) 
         else:
-            print("\nGUARDAR LOG, username existe")
+            llamar_insertar_registro_actividad(usuario_admin, "INSERT", "Error al registrar un usuario, usuario existente")
+            print("\n", Back.RED + Fore.WHITE, "Error al registrar un usuario, usuario existente", Style.RESET_ALL) 
 
         # datos ingresados
         # print("\n", nombre_usuario, password_usuario, rol_usuario, usuario_admin, password_admin, registrar_nuevo_usuario_si_o_no)
