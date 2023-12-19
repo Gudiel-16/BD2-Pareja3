@@ -7,6 +7,7 @@ from crud_log_actividad import select_log_actividad, update_log_actividad, inser
 from crud_log_habitacion import select_log_habitacion, update_log_habitacion, insert_log_habitacion
 from respaldo import crear_respaldo, registrar_respaldo_en_db, obtener_lista_respaldos, mostrar_respaldos, restaurar_respaldo, menu_restaurar_respaldo
 import getpass
+from logs import llamar_insertar_registro_actividad
 
 init()
 
@@ -58,6 +59,8 @@ def registar_usuario():
     if(registrar_nuevo_usuario_si_o_no.lower() == "s"):
         if(verificar_si_username_existe_en_db(usuario_admin, password_admin, nombre_usuario) == False):
             crear_y_registrar_usuario_en_db(usuario_admin, password_admin, nombre_usuario, password_usuario, rol_usuario)
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "INSERT", "Se registro nuevo usuario")
             print("\nGUARDAR LOG, usuario guardado exitosamente")
         else:
             print("\nGUARDAR LOG, username existe")
@@ -111,10 +114,16 @@ def menu_usuario():
             menu_crud("DELETE")
         elif opcion == "5":
             crear_respaldo(usuario_logueado, password_usuario_logueado)
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "INSERT", "Se creo un respaldo nuevo")
         elif opcion == "6":
             mostrar_respaldos(usuario_logueado, password_usuario_logueado)
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "SELECT", "Se consulto tabla de respaldos")
         elif opcion == "7":
             menu_restaurar_respaldo(usuario_logueado, password_usuario_logueado)
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "SELECT", "Se realizo una restauracion")
         elif opcion == "8":
             print("\n", Back.BLUE + Fore.WHITE,"¡Hasta luego " + usuario_logueado + "!", Style.RESET_ALL)
             break
@@ -140,21 +149,29 @@ def menu_crud(privilegio):
                 swith_cruds("paciente", privilegio)
             else:
                 print("\n", Back.RED + Fore.WHITE, "Acceso denegado.", Style.RESET_ALL)
+                #usuario, accion, detalles
+                llamar_insertar_registro_actividad(usuario_logueado, "ACCESS DENIED", "Se denego el acceso")
         elif opcion == "2":
             if(verificar_si_usuario_tiene_permisos(rol_usuario_logueado, "habitacion", privilegio)):
                 swith_cruds("habitacion", privilegio)
             else:
                 print("\n", Back.RED + Fore.WHITE, "Acceso denegado.", Style.RESET_ALL) 
+                #usuario, accion, detalles
+                llamar_insertar_registro_actividad(usuario_logueado, "ACCESS DENIED", "Se denego el acceso")
         elif opcion == "3":
             if(verificar_si_usuario_tiene_permisos(rol_usuario_logueado, "log_actividad", privilegio)):
                 swith_cruds("log_actividad", privilegio)
             else:
-                print("\n", Back.RED + Fore.WHITE, "Acceso denegado.", Style.RESET_ALL) 
+                print("\n", Back.RED + Fore.WHITE, "Acceso denegado.", Style.RESET_ALL)
+                #usuario, accion, detalles
+                llamar_insertar_registro_actividad(usuario_logueado, "ACCESS DENIED", "Se denego el acceso") 
         elif opcion == "4":
             if(verificar_si_usuario_tiene_permisos(rol_usuario_logueado, "log_habitacion", privilegio)):
                 swith_cruds("log_habitacion", privilegio)
             else:
                 print("\n", Back.RED + Fore.WHITE, "Acceso denegado.", Style.RESET_ALL) 
+                #usuario, accion, detalles
+                llamar_insertar_registro_actividad(usuario_logueado, "ACCESS DENIED", "Se denego el acceso")
         elif opcion == "5":
             break
         else:
@@ -172,16 +189,28 @@ def swith_cruds(tabla, privilegio):
             edad_paciente = input("EDAD PACIENTE: ")
             genero_paciente = input("GENERO PACIENTE: ")
             update_paciente(usuario_logueado, password_usuario_logueado, rol_usuario_logueado, id_paciente, edad_paciente, genero_paciente)
+            
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "UPDATE", "Se actualizo paciente")
+            
             print("\n", Back.GREEN + Fore.WHITE, "Paciente actualizado exitosamente.", Style.RESET_ALL) 
         elif(privilegio == "INSERT"):
             id_paciente = input("\nID PACIENTE: ")
             edad_paciente = input("EDAD PACIENTE: ")
             genero_paciente = input("GENERO PACIENTE: ")
             insert_paciente(usuario_logueado, password_usuario_logueado, rol_usuario_logueado, id_paciente, edad_paciente, genero_paciente)
+            
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "INSERT", "Se inserto paciente")
+            
             print("\n", Back.GREEN + Fore.WHITE, "Paciente insertado exitosamente.", Style.RESET_ALL) 
     elif(tabla == "habitacion"):
         if(privilegio == "SELECT"):
             resultados = select_habitacion(usuario_logueado, password_usuario_logueado, rol_usuario_logueado)
+
+            #usuario, accion, detalles
+            llamar_insertar_registro_actividad(usuario_logueado, "SELECT", "Se consulto habitacion")
+
             for resultado in resultados:
                 print(resultado)
     elif(tabla == "log_actividad"):
