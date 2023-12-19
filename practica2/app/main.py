@@ -5,6 +5,7 @@ from crud_paciente import select_paciente, update_paciente, insert_paciente
 from crud_habitacion import select_habitacion
 from crud_log_actividad import select_log_actividad, update_log_actividad, insert_log_actividad
 from crud_log_habitacion import select_log_habitacion, update_log_habitacion, insert_log_habitacion
+from respaldo import crear_respaldo, registrar_respaldo_en_db, obtener_lista_respaldos, mostrar_respaldos, restaurar_respaldo, menu_restaurar_respaldo
 import getpass
 
 init()
@@ -109,11 +110,11 @@ def menu_usuario():
         elif opcion == "4":
             menu_crud("DELETE")
         elif opcion == "5":
-            print("Realizar respaldo")
+            crear_respaldo(usuario_logueado, password_usuario_logueado)
         elif opcion == "6":
-            print("Ver respaldos")
+            mostrar_respaldos(usuario_logueado, password_usuario_logueado)
         elif opcion == "7":
-            print("Restaurar respaldo")
+            menu_restaurar_respaldo(usuario_logueado, password_usuario_logueado)
         elif opcion == "8":
             print("\n", Back.BLUE + Fore.WHITE,"¡Hasta luego " + usuario_logueado + "!", Style.RESET_ALL)
             break
