@@ -1,4 +1,5 @@
 import mysql.connector
+from logs import llamar_insertar_registro_actividad
 
 def select_log_actividad(usuario, password, rol):
 
@@ -29,6 +30,8 @@ def select_log_actividad(usuario, password, rol):
         cursor.execute(query)
 
         resultados = cursor.fetchall()
+
+        llamar_insertar_registro_actividad(usuario, "SELECT", "Log Actividad")
 
         return resultados
 
@@ -67,6 +70,8 @@ def update_log_actividad(usuario, password, rol, id_log_actividad, timestampx, a
 
         cursor.execute(query)
 
+        llamar_insertar_registro_actividad(usuario, "UPDATE", "Log Actividad")
+
     except mysql.connector.Error as err:
         print(err)
     
@@ -101,6 +106,8 @@ def insert_log_actividad(usuario, password, rol, timestampx, actividad, id_habit
                 '''.format(timestampx, actividad, id_habitacion, id_paciente)
 
         cursor.execute(query)
+
+        llamar_insertar_registro_actividad(usuario, "INSERT", "Log Actividad")
 
     except mysql.connector.Error as err:
         print(err)
