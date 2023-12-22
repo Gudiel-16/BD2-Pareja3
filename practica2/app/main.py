@@ -262,7 +262,7 @@ def main():
         print("=================== MENU PRINCIPAL ===================")
         print("======================================================\n")
         print("1. INICIAR SESION")
-        print("2. RESITRAR UN NUEVO USUARIO")
+        print("2. REGSITRAR UN NUEVO USUARIO")
         print("3. SALIR" , Style.RESET_ALL)
 
         opcion = input("\nINGRESE LA OPCION DESEADA: ")

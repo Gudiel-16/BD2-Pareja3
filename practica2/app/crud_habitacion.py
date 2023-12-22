@@ -1,4 +1,5 @@
 import mysql.connector
+from logs import llamar_insertar_registro_actividad
 
 def select_habitacion(usuario, password, rol):
 
@@ -26,10 +27,13 @@ def select_habitacion(usuario, password, rol):
                     ORDER BY idHabitacion DESC
                     LIMIT 25;
                 '''
+        
 
         cursor.execute(query)
 
         resultados = cursor.fetchall()
+
+        llamar_insertar_registro_actividad(usuario, "SELECT", "Habitacion")
 
         return resultados
 

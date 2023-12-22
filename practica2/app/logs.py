@@ -23,7 +23,7 @@ def llamar_insertar_registro_actividad(usuario, accion, detalles):
         cursor.close()
         conexion.close()
 
-        print("Registro de actividad insertado con éxito.")
+        # print("Registro de actividad insertado con éxito.")
     
     except mysql.connector.Error as e:
         print(f"Error al insertar registro de actividad: {e}")

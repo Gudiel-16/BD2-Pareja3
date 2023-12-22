@@ -1,4 +1,5 @@
 import mysql.connector
+from logs import llamar_insertar_registro_actividad
 
 def select_paciente(usuario, password, rol):
 
@@ -30,6 +31,8 @@ def select_paciente(usuario, password, rol):
         cursor.execute(query)
 
         resultados = cursor.fetchall()
+
+        llamar_insertar_registro_actividad(usuario, "SELECT", "Paciente")
 
         return resultados
 
@@ -66,6 +69,7 @@ def update_paciente(usuario, password, rol, id_paciente, edad_paciente, genero_p
                     UPDATE paciente SET edad = {}, genero = '{}' WHERE idPaciente = {};
                 '''.format(edad_paciente, genero_paciente, id_paciente)
 
+        llamar_insertar_registro_actividad(usuario, "UPDATE", "Paciente")
         cursor.execute(query)
 
     except mysql.connector.Error as err:
@@ -100,6 +104,8 @@ def insert_paciente(usuario, password, rol, id_paciente, edad_paciente, genero_p
         query = '''
                     INSERT INTO paciente(idPaciente, edad, genero) VALUES({}, {}, '{}');
                 '''.format(id_paciente, edad_paciente, genero_paciente)
+        
+        llamar_insertar_registro_actividad(usuario, "INSERT", "Paciente")
 
         cursor.execute(query)
 
