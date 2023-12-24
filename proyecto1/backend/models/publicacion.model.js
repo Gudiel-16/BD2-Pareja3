@@ -1,6 +1,6 @@
 const createDriver = require('../database/config.neo4j');
 
-const registrarUsuario = (params) => {
+const insertarPublicacion = (params) => {
     return new Promise(async (resolve, reject) => {
 
         let session;
@@ -11,17 +11,9 @@ const registrarUsuario = (params) => {
             const driver = createDriver();
             session = driver.session({ database: process.env.DB_NEO4J_NAME_DB });
 
-            // verificando si ya existe correo
-            const resultCorreo = await session.run(
-                `MATCH (u:Usuario {correo: $correo}) RETURN u`,
-                {correo: params.correo}
-            );
-
-            if(resultCorreo.records.length > 0) { reject("Correo existente"); return; };
-
             // guardar doctor
             const result = await session.run(
-                'CREATE (u:Usuario {id_doctor: $id_doctor, nombre: $nombre, username: $username, correo: $correo, edad: $edad, especialidad: $especialidad, password: $password, sitio_web: $sitio_web}) RETURN u',
+                'CREATE (p:Publicacion {id_doctor: $id_doctor, texto: $texto, fecha: $fecha}) RETURN p',
                 params
             );
 
@@ -39,8 +31,8 @@ const registrarUsuario = (params) => {
     });
 };
 
-const iniciarSesion = (params) => {
-    return new Promise( async (resolve, reject) => {
+const obtenerPublicacionesPorIdDoctor = (params) => {
+    return new Promise(async (resolve, reject) => {
 
         let session;
 
@@ -50,10 +42,10 @@ const iniciarSesion = (params) => {
             const driver = createDriver();
             session = driver.session({ database: process.env.DB_NEO4J_NAME_DB });
 
-            // consulta
+            // guardar doctor
             const result = await session.run(
-                `MATCH (u:Usuario {correo: $correo}) RETURN u`,
-                {correo: params.correo}
+                'MATCH (p:Publicacion {id_doctor: $id_doctor}) RETURN p',
+                params
             );
 
             resolve(result);
@@ -70,4 +62,4 @@ const iniciarSesion = (params) => {
     });
 };
 
-module.exports = { registrarUsuario, iniciarSesion };
+module.exports = { insertarPublicacion, obtenerPublicacionesPorIdDoctor };

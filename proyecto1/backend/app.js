@@ -22,6 +22,7 @@ dbConnection();
 // Routes
 app.use('/', require('./routes/index.route'));
 app.use('/api', require('./routes/auth.route'));
+app.use('/api', require('./routes/publicacion.route'));
 
 // Port assignment
 const server = app.listen(PORT, () => {
