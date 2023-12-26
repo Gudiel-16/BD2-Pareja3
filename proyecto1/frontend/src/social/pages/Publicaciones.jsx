@@ -1,6 +1,6 @@
 import React from "react";
 
-function Publicaciones() {
+const Publicaciones = () => {
     return (
         <div>
         <h1>Publicaciones</h1>
