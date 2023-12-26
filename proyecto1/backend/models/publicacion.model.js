@@ -67,4 +67,37 @@ const obtenerPublicacionesPorIdDoctor = (params) => {
     });
 };
 
-module.exports = { insertarPublicacion, obtenerPublicacionesPorIdDoctor };
+const obtenerPublicacionesDeAmigos = (params) => {
+    return new Promise(async (resolve, reject) => {
+
+        let session;
+
+        try {
+
+            // conexion
+            const driver = createDriver();
+            session = driver.session({ database: process.env.DB_NEO4J_NAME_DB });
+
+            // obtengo amigos y la coleccion de publicaciones que tiene ese amigo
+            const result = await session.run(
+                `MATCH (usuario:Usuario {id_doctor: $id_doctor})-[:ES_AMIGO_DE]-(amigo),
+                (publicacion:Publicacion {id_doctor: amigo.id_doctor})
+                RETURN DISTINCT amigo, COLLECT(DISTINCT publicacion) AS publicaciones`,
+                params
+            );
+
+            resolve(result);
+
+        } catch (error) {
+            console.log(error);
+            reject(error);
+
+        } finally {
+            if (session) {
+                await session.close();
+            }
+        }
+    });
+};
+
+module.exports = { insertarPublicacion, obtenerPublicacionesPorIdDoctor, obtenerPublicacionesDeAmigos };

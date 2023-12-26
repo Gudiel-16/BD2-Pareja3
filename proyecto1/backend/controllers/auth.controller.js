@@ -42,8 +42,8 @@ const registrar_usuario = async (req, res) => {
         const salt = bcrypt.genSaltSync();
         req.body.password = bcrypt.hashSync(password, salt);
 
-        // asignando sitio web nulo
-        req.body.sitio_web = null;
+        // asignando sitio web vacio
+        req.body.sitio_web = "";
 
         // guardando usuario en neo4j
         await authModel.registrarUsuario(req.body);
