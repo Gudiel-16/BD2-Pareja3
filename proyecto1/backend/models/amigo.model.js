@@ -12,10 +12,13 @@ const agregarAmigo = (params) => {
             session = driver.session({ database: process.env.DB_NEO4J_NAME_DB });
 
             let query = `MATCH (usuario1:Usuario {id_doctor: $id_doctor}), (usuario2:Usuario {id_doctor: $id_amigo})
-                        CREATE (usuario1)-[:ES_AMIGO_DE]->(usuario2)
-                        CREATE (usuario2)-[:ES_AMIGO_DE]->(usuario1)`;
+                        MERGE (c:Chat {id1: $id_doctor, id2: $id_amigo})
+                        MERGE (usuario1)-[:ES_AMIGO_DE]->(usuario2)
+                        MERGE (usuario2)-[:ES_AMIGO_DE]->(usuario1)
+                        MERGE (usuario1)-[:DISCUTE]->(c)
+                        MERGE (usuario2)-[:DISCUTE]->(c)`;
 
-            const result = await session.run(query, params);
+            let result = await session.run(query, params);
 
             resolve(result);
 

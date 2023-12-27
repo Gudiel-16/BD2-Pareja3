@@ -26,6 +26,7 @@ app.use('/api', require('./routes/publicacion.route'));
 app.use('/api', require('./routes/amigo.route'));
 app.use('/api', require('./routes/perfil.route'));
 app.use('/api', require('./routes/pdf.route'));
+app.use('/api', require('./routes/chat.route'));
 
 // Port assignment
 const server = app.listen(PORT, () => {
