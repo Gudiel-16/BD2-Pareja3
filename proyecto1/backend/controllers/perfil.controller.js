@@ -50,4 +50,33 @@ const actualizar_perfil = async (req, res) => {
 
 }
 
-module.exports = { obtener_perfil, actualizar_perfil };
+const actualizar_foto = async (req, res) => {
+
+    try {
+
+        const { id_doctor, foto } = req.body;
+
+        const fotoUsuario = await FotoModelMongo.findOne({ id_doctor: id_doctor });
+
+        // si aun no hay usuario, aun no tiene foto
+        if(!fotoUsuario){
+            let foto_mongo = new FotoModelMongo({ id_doctor: id_doctor, foto: foto });
+    
+            // guardando foto en mongo
+            await foto_mongo.save();
+
+            return response(res, 200, 'Foto actualizada con exito.', []);  
+        }
+
+        // solo actualizamos
+        await FotoModelMongo.findOneAndUpdate({id_doctor: id_doctor}, { foto: foto }, {new: true});
+        
+        response(res, 200, 'Foto actualizada con exito.', []);  
+        
+    } catch (error) {
+        return response(res, 400, 'Error al actualizar foto.', [error]);
+    }
+
+}
+
+module.exports = { obtener_perfil, actualizar_perfil, actualizar_foto };

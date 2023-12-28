@@ -33,7 +33,11 @@ const iniciar_sesion = async (req, res) => {
 const registrar_usuario = async (req, res) => {
     try {
         
-        const { password, foto } = req.body;
+        const { password } = req.body;
+        let { foto } = req.body;
+
+        // validando si viene foto
+        foto = foto != undefined ? foto : '';
         
         // creando id
         req.body.id_doctor = v4();
@@ -48,11 +52,13 @@ const registrar_usuario = async (req, res) => {
         // guardando usuario en neo4j
         await authModel.registrarUsuario(req.body);
 
-        // objeto schema de mongo
-        let foto_mongo = new FotoModelMongo({ id_doctor: req.body.id_doctor, foto: foto });
-
-        // guardando foto en mongo
-        await foto_mongo.save();
+        if(foto != ''){
+            // objeto schema de mongo
+            let foto_mongo = new FotoModelMongo({ id_doctor: req.body.id_doctor, foto: foto });
+    
+            // guardando foto en mongo
+            await foto_mongo.save();
+        }
 
         response(res, 200, 'Usuario registrado con exito', []);
 
