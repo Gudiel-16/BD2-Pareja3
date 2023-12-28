@@ -6,7 +6,7 @@ import { Button, Grid, Link, TextField, Typography } from '@mui/material';
 
 import { AuthLayout } from '../layout/AuthLayout';
 import { useForm } from '../../hooks';
-import { checkingAtuhenication } from '../../store/auth/thunks';
+import { checkingAtuhenication, loginUser} from '../../store/auth/thunks';
 
 export const Login = () => {
 
@@ -15,18 +15,18 @@ export const Login = () => {
   const { status } = useSelector(state => state.auth);
 
 
-  const {email, password, onInputChange, formState} = useForm({
-    email: '',
+  const {correo, password, onInputChange, formState} = useForm({
+    correo: '',
     password: ''
-  })
-
+})
   const isAuthenticating = useMemo( () => status === 'cheking', [status]);
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password);
-    dispatch(checkingAtuhenication());
-  }
+    dispatch(loginUser(formState));
+};
+
+
 
 
     return (
@@ -35,14 +35,14 @@ export const Login = () => {
             <Grid container>
               <Grid item xs={ 12 } sx={{ mt: 2 }}>
                 <TextField 
-                  label="email" 
-                  type="text" 
+                  label="Correo" 
+                  type="email" 
                   placeholder='user@gmail.com' 
                   fullWidth
-                  name='email'
-                  value={ email } 
+                  name='correo'
+                  value={ correo } 
                   onChange={ onInputChange }
-                />
+              />
               </Grid>
   
               <Grid item xs={ 12 } sx={{ mt: 2 }}>
