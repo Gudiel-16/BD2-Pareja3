@@ -6,7 +6,7 @@ const FotoModelMongo = require('../models/models_mongo/foto.model')
 
 const iniciar_sesion = async (req, res) => {
     try {
-
+        console.log(req.body);
         const { password } = req.body;
         let results =  await authModel.iniciarSesion(req.body);
 
@@ -32,9 +32,9 @@ const iniciar_sesion = async (req, res) => {
 
 const registrar_usuario = async (req, res) => {
     try {
-
+        
         const { password, foto } = req.body;
-
+        
         // creando id
         req.body.id_doctor = v4();
 

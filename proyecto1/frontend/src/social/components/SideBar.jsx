@@ -1,7 +1,25 @@
 import { Box, Divider, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from '@mui/material'
 import { TurnedInNot } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import { setVistaActual } from '../../store/social/navigationSlice';
 
 export const SideBar = ({ drawerWidth = 240 }) => {
+
+    const dispatch = useDispatch();
+    const vistas = [
+        {nombre: 'Perfil', vista: 'UserInformation'},
+        {nombre: 'Publicaciones', vista: 'Publicaciones'},
+        {nombre: 'Mis Amigos', vista: 'ListaAmigos'},
+        {nombre: 'Agregar Amigos', vista: 'BusquedaAmigos'},
+        {nombre: 'Mensajes', vista: 'Mensajes'},
+        {nombre: 'Consultas', vista: 'VistaConsultas'}
+
+    ]
+
+    const handleItemClick = (vista) => {
+        dispatch(setVistaActual(vista));
+    }
+
   return (
     <Box
         component='nav'
@@ -24,9 +42,9 @@ export const SideBar = ({ drawerWidth = 240 }) => {
 
             <List>
                 {
-                    ['Publicaciones','Perfil','Mis Amigos','Agregar Amigos','Mensajes'].map( text => (
+                    ['Publicaciones','UserInformation','ListaAmigos','BusquedaAmigos','Mensajes', 'VistaConsultas'].map( text => (
                         <ListItem key={ text } disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={ ()=> handleItemClick(text) }>
                                 <ListItemIcon>
                                     <TurnedInNot />
                                 </ListItemIcon>

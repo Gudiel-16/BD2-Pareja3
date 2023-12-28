@@ -1,11 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Perfil } from "../pages/Perfil";
+import { Principal } from "../pages/Principal";
 
 export const SocialRoutes = () => {
     return (
         <Routes>
-            <Route path="/perfil" element={<Perfil/>}/>
-            <Route path="/*" element={<Navigate to="/auth/login"/>}/>
+            <Route path="/" element={<Principal/>}/>
+            <Route path="/*" element={<Navigate to="/"/>}/>
         </Routes>
     );
 }

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const authSlice = createSlice({
     name: 'auth',
     initialState: {
-        status: 'not-authenticated', // 'not-authenticated', 'authenticated'
+        status: 'cheking', // 'not-authenticated', 'authenticated'
          id_doctor :  null ,
          correo :  null ,
          edad : null,
@@ -34,7 +34,7 @@ export const authSlice = createSlice({
             state.nombre = null;
             state.username = null;
             state.foto = null;
-            state.errorMessage = payload.errorMessage;
+            state.errorMessage = payload.msg;
         },
 
         checkingCredentiasl: (state, action) => {

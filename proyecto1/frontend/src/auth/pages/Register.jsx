@@ -1,24 +1,53 @@
 import { Link as RouterLink } from 'react-router-dom';
 import { Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import { AuthLayout } from '../layout/AuthLayout';
 import { useForm } from '../../hooks';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser } from '../../store/auth/thunks';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 
 export const RegisterPage = () => {
 
-  const { nombre, usuario, email, edad, especialidad, password, onInputChange, formState } = useForm({
+  const dispatch = useDispatch();
+
+  const { nombre, username, correo, edad, especialidad, password, onInputChange, formState } = useForm({
     nombre: '',
-    usuario: '',
-    email: '',
+    username: '',
+    correo: '',
     edad: '',
     especialidad: '',
     password: ''
   });
 
+  const { status } = useSelector(state => state.auth);
+  const [openDialog, setOpenDialog] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      setOpenDialog(true);
+    } else {
+      setOpenDialog(false);
+    }
+  }, [status]);
+
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    navigate("/auth/login");
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(formState);
+    //console.log(formState);
+
+    dispatch(  registerUser( formState ) );
+
   }
 
   return (
@@ -40,24 +69,24 @@ export const RegisterPage = () => {
 
             <Grid item xs={ 12 } sx={{ mt: 2 }}>
               <TextField 
-                label="Usuario" 
+                label="username" 
                 type="text" 
-                placeholder='Usuario' 
+                placeholder='username' 
                 fullWidth
-                name='usuario'
-                value={ usuario }
+                name='username'
+                value={ username }
                 onChange={ onInputChange }
               />
             </Grid>
 
             <Grid item xs={ 12 } sx={{ mt: 2 }}>
               <TextField 
-                label="Correo" 
-                type="email" 
+                label="correo" 
+                type="text" 
                 placeholder='correo@google.com' 
                 fullWidth
-                name='email'
-                value={ email }
+                name='correo'
+                value={ correo }
                 onChange={ onInputChange }
               />
             </Grid>
@@ -116,6 +145,24 @@ export const RegisterPage = () => {
                 ingresar
               </Link>
             </Grid>
+            <Dialog
+              open={openDialog}
+              onClose={handleCloseDialog}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">{"Registro Exitoso"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Usuario creado correctamente.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseDialog} color="primary" autoFocus>
+                  OK
+                </Button>
+              </DialogActions>
+            </Dialog>
 
           </Grid>
 

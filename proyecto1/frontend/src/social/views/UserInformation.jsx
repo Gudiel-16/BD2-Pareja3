@@ -1,13 +1,17 @@
 import { Button, Grid, TextField, Typography, Link } from '@mui/material';
 import { EditOutlined } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
-export const UserInformation = ({ user }) => {
+export const UserInformation = () => {
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  
   return (
     <Grid container direction='column' spacing={2}>
       
       <Grid item>
         <Typography variant='h4' gutterBottom>
-          Bienvenido {user.title} {user.name}
+          Bienvenido
         </Typography>
       </Grid>
       
@@ -20,10 +24,8 @@ export const UserInformation = ({ user }) => {
             variant="outlined"
             fullWidth
             label="Nombre Completo"
-            value={user.fullName}
-            InputProps={{
-              readOnly: true,
-            }}
+            value={user.nombre || ''}
+            InputProps={{ readOnly: true }}
           />
         </Grid>
         
@@ -33,10 +35,8 @@ export const UserInformation = ({ user }) => {
             variant="outlined"
             fullWidth
             label="Nombre Usuario"
-            value={user.username}
-            InputProps={{
-              readOnly: true,
-            }}
+            value={user.username || ''}
+            InputProps={{ readOnly: true }}
           />
         </Grid>
         
@@ -46,10 +46,8 @@ export const UserInformation = ({ user }) => {
             variant="outlined"
             fullWidth
             label="Edad"
-            value={user.age}
-            InputProps={{
-              readOnly: true,
-            }}
+            value={user.edad || ''}
+            InputProps={{ readOnly: true }}
           />
         </Grid>
         
@@ -59,10 +57,8 @@ export const UserInformation = ({ user }) => {
             variant="outlined"
             fullWidth
             label="Sitio Web"
-            value={user.website}
-            InputProps={{
-              readOnly: true,
-            }}
+            value={user.sitio_web || ''}
+            InputProps={{ readOnly: true }}
           />
         </Grid>
         
@@ -72,10 +68,8 @@ export const UserInformation = ({ user }) => {
             variant="outlined"
             fullWidth
             label="Especialidad"
-            value={user.specialty}
-            InputProps={{
-              readOnly: true,
-            }}
+            value={user.especialidad || ''}
+            InputProps={{ readOnly: true }}
           />
         </Grid>
       </Grid>
