@@ -1,68 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, Card, CardContent, Typography, CardActions, Button, CardMedia } from '@mui/material';
-
-const amigos = [
-  {
-    id: '1',
-    nombre: 'Dos Dr Dos',
-    perfilUrl: '/perfil/dos',
-    imagen: 'path/to/amigo1-imagen.jpg',
-  },
-  {
-    id: '2',
-    nombre: 'Tres Dr Tres',
-    perfilUrl: '/perfil/tres',
-    imagen: 'path/to/amigo2-imagen.jpg',
-  },
-  {
-    id: '3',
-    nombre: 'Cuatro Dr Cuatro',
-    perfilUrl: '/perfil/cuatro',
-    imagen: 'path/to/amigo3-imagen.jpg',
-  },
-  {
-    id: '4',
-    nombre: 'Cinco Dr Cinco',
-    perfilUrl: '/perfil/cinco',
-    imagen: 'path/to/amigo4-imagen.jpg',
-  },
-  {
-    id: '5',
-    nombre: 'Seis Dr Seis',
-    perfilUrl: '/perfil/seis',
-    imagen: 'path/to/amigo5-imagen.jpg',
-  },
-  {
-    id: '6',
-    nombre: 'Siete Dr Siete',
-    perfilUrl: '/perfil/siete',
-    imagen: 'path/to/amigo6-imagen.jpg',
-  },
-  {
-    id: '7',
-    nombre: 'Ocho Dr Ocho',
-    perfilUrl: '/perfil/ocho',
-    imagen: 'path/to/amigo7-imagen.jpg',
-  },
-  {
-    id: '8',
-    nombre: 'Nueve Dr Nueve',
-    perfilUrl: '/perfil/nueve',
-    imagen: 'path/to/amigo8-imagen.jpg',
-  },
-  {
-    id: '9',
-    nombre: 'Diez Dr Diez',
-    perfilUrl: '/perfil/diez',
-    imagen: 'path/to/amigo9-imagen.jpg',
-  },
-  {
-    id: '10',
-    nombre: 'Once Dr Once',
-    perfilUrl: '/perfil/once',
-    imagen: 'path/to/amigo10-imagen.jpg',
-  }
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { obtenerAmigos } from '../../store/social';
 
 
 export const ListaAmigos = () => {
@@ -71,13 +10,25 @@ export const ListaAmigos = () => {
     console.log(`Eliminar amigo con id: ${idAmigo}`);
   };
 
+
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+
+
+  const dispatch = useDispatch();
+  const { amigos, loading, error } = useSelector((state) => state.amigos);
+
+  useEffect(() => {
+    dispatch(obtenerAmigos(user.id_doctor));
+  }, [dispatch]);
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Typography variant='h4' gutterBottom>Mis amigos:</Typography>
       </Grid>
       {amigos.map((amigo) => (
-        <Grid item xs={12} sm={6} md={4} key={amigo.id}>
+        <Grid item xs={12} sm={6} md={4} key={amigo.id_doctor}>
           <Card>
             <CardMedia
               component="img"

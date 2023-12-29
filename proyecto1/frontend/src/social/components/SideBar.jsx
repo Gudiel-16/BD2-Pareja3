@@ -4,7 +4,10 @@ import { useDispatch } from 'react-redux';
 import { setVistaActual } from '../../store/social/navigationSlice';
 
 export const SideBar = ({ drawerWidth = 240 }) => {
-
+    
+    const userString = localStorage.getItem('user');
+    const user = userString ? JSON.parse(userString) : null;
+    console.log(user);
     const dispatch = useDispatch();
     const vistas = [
         {nombre: 'Perfil', vista: 'UserInformation'},
@@ -35,7 +38,7 @@ export const SideBar = ({ drawerWidth = 240 }) => {
         >
             <Toolbar>
                 <Typography variant='h6' noWrap component='div'>
-                    Dr. { 'Nombre Apellido' }
+                    Dr. { user?.nombre }
                 </Typography>
             </Toolbar>
             <Divider />

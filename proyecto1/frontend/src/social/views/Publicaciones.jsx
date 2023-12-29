@@ -2,10 +2,11 @@ import { Card, CardContent, CardHeader, Avatar, Typography, CardActions, IconBut
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { crearPublicacion, fetchPublicaciones } from '../../store/social/publicacion/publicacionThunks';
+import { crearPublicacion, fetchPublicaciones} from '../../store/social/publicacion/publicacionThunks';
 
 export const Publicaciones = () => {
     const dispatch = useDispatch();
+
     const { publicaciones, loading, error } = useSelector((state) => state.publicaciones);
     const [newPostContent, setNewPostContent] = useState('');
 
