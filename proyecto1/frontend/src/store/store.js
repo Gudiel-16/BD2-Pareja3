@@ -1,12 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authSlice } from './auth';
 import { navigationSlice } from './social/navigationSlice';
-import { publicacionSlice} from './social/publicacion/publicacionSlice';
+import { userSlice, amigosSlice, publicacionSlice} from './social'
 
 export const store = configureStore({
     reducer: {
         auth: authSlice.reducer,
         navigation: navigationSlice.reducer,
         publicaciones: publicacionSlice.reducer,
+        usuario: userSlice.reducer,
+        amigos: amigosSlice.reducer,
     }
 });

@@ -31,7 +31,7 @@ export const registerUser = ({ nombre, username, correo, edad, especialidad, pas
             console.log(data);
             if (data.status === 200) {
                 
-                dispatch(login(data.data)); // Suponiendo que 'data' contiene la información del usuario y el token
+                dispatch(login(data.data[0])); // Suponiendo que 'data' contiene la información del usuario y el token
 
             } else {
                 dispatch(logout({ errorMessage: data.errorMessage || 'Error en el registro' }));

@@ -9,9 +9,15 @@ export const NavBar = ({ drawerWidth = 240 }) => {
 
     const onLogOut = () => {
         //console.log('logout');
+        
         localStorage.removeItem('user');
+        
+        localStorage.clear();
+
         dispatch(logout());
     }
+
+    
 
   return (
     <AppBar 
