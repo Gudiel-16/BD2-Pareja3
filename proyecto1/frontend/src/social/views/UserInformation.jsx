@@ -1,13 +1,24 @@
-import { Button, Grid, TextField, Typography, Link } from '@mui/material';
+import { Button, Grid, TextField, Typography, Link, Avatar } from '@mui/material';
 import { EditOutlined } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 
 export const UserInformation = () => {
   const userString = localStorage.getItem('user');
   const user = userString ? JSON.parse(userString) : null;
+  console.log(user);
   
   return (
     <Grid container direction='column' spacing={2}>
+
+      <Grid item>
+        {/* Foto de perfil */}
+        <Avatar 
+          alt={user.nombre || 'Perfil'}
+          src={user.foto || '/path/to/default-avatar.jpg'} // Ruta a la imagen de perfil o una imagen por defecto
+          sx={{ width: 100, height: 100 }} // Tamaño del avatar
+        />
+      </Grid>
+
       
       <Grid item>
         <Typography variant='h4' gutterBottom>

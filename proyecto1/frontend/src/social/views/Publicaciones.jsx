@@ -1,71 +1,44 @@
-import { Card, CardContent, CardHeader, Avatar, Typography, CardActions, IconButton, Grid, TextField, Button } from '@mui/material';
+import { Card, CardContent, CardHeader, Avatar, Typography, CardActions, IconButton, Grid, TextField, Button, CircularProgress, Alert } from '@mui/material';
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { crearPublicacion, fetchPublicaciones } from '../../store/social/publicacion/publicacionThunks';
 
 export const Publicaciones = () => {
+    const dispatch = useDispatch();
+    const { publicaciones, loading, error } = useSelector((state) => state.publicaciones);
+    const [newPostContent, setNewPostContent] = useState('');
 
-    const posts = [
-        {
-          id: 1,
-          author: "Dra. Ana Torres",
-          authorAvatar: "path/to/ana-avatar.jpg",
-          content: "Compartiendo mi última investigación sobre cardiología y avances recientes en la medicina.",
-          date: "2023-06-12T18:30:00.000Z",
-          likes: 34,
-          comments: 12
-        },
-        {
-          id: 2,
-          author: "Dr. Luis Ramirez",
-          authorAvatar: "path/to/luis-avatar.jpg",
-          content: "Es increíble cómo la tecnología está cambiando el futuro de la atención al paciente. #tecnologíamédica",
-          date: "2023-06-11T15:45:00.000Z",
-          likes: 56,
-          comments: 18
-        },
-        {
-          id: 3,
-          author: "Dra. María Gómez",
-          authorAvatar: "path/to/maria-avatar.jpg",
-          content: "Agradecida por asistir al congreso internacional de dermatología. Aprendí mucho sobre nuevos tratamientos.",
-          date: "2023-06-10T12:00:00.000Z",
-          likes: 42,
-          comments: 9
-        },
-        {
-          id: 4,
-          author: "Dr. Jorge Espinoza",
-          authorAvatar: "path/to/jorge-avatar.jpg",
-          content: "Alentando a mis colegas a mantenerse activos en la comunidad médica en línea. #conectividad",
-          date: "2023-06-09T09:20:00.000Z",
-          likes: 19,
-          comments: 4
-        }
-      ];
+    const userString = localStorage.getItem('user');
+    const { id_doctor } = userString ? JSON.parse(userString) : null;
 
-      // Estado para el nuevo post
-        const [newPostContent, setNewPostContent] = useState("");
+    useEffect(() => {
+      dispatch(fetchPublicaciones(id_doctor));
+    }, [dispatch, id_doctor]);
 
-        // Manejar el cambio en el área de texto
-        const handlePostChange = (event) => {
-            //setNewPostContent(event.target.value);
-        };
+    const handlePostChange = (event) => {
+        setNewPostContent(event.target.value);
+    };
 
-        // Manejar el envío del nuevo post
-        const handlePostSubmit = () => {
-            // Aquí puedes manejar la lógica para enviar el post a tu backend o añadirlo al estado
-            //console.log(newPostContent);
-            // Luego limpiar el estado
-            //setNewPostContent("");
-        };
-      
-  return (
-    <Grid container spacing={2}>
+    const handlePostSubmit = () => {
+      if (!newPostContent.trim()) return; // Previene la creación de publicaciones vacías
+      const newPost = {
+        id_doctor: id_doctor,
+        texto: newPostContent,
+        fecha: new Date().toISOString()
+      };
+      dispatch(crearPublicacion(newPost))
+        .unwrap() // Unwrap es necesario para manejar promesas con createAsyncThunk
+        .then(() => dispatch(fetchPublicaciones(id_doctor))) // Recargar publicaciones después de crear una
+        .catch(() => {}); // Manejar errores si es necesario
+      setNewPostContent('');
+    };
 
-    {/* Formulario para añadir un nuevo post */}
+    return (
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-            <Typography variant='h5' gutterBottom>Añadir una publicación:</Typography>
-            <TextField
+          <Typography variant='h5' gutterBottom>Añadir una publicación:</Typography>
+          <TextField
             label="¿Qué estás pensando?"
             multiline
             rows={4}
@@ -73,44 +46,42 @@ export const Publicaciones = () => {
             onChange={handlePostChange}
             variant="outlined"
             fullWidth
-            />
-            <Button
+          />
+          <Button
             variant='contained'
             color='primary'
             onClick={handlePostSubmit}
             sx={{ mt: 2 }}
-            >
+            disabled={loading} // Deshabilita durante la carga
+          >
             Publicar
-            </Button>
-        </Grid>  
-      {posts.map((post, index) => (
+          </Button>
+        </Grid>
+        {loading && <CircularProgress />} 
+        {error && <Alert severity="error">{error}</Alert>}
+        {publicaciones.map((post, index) => (
         <Grid item key={index} xs={12} md={6}>
           <Card>
             <CardHeader
               avatar={
-                <Avatar src={post.authorAvatar}>
-                  {post.author[0]}
-                </Avatar>
+                post.autor
+                  ? <Avatar>{post.autor[0]}</Avatar> // Primer letra del nombre del autor
+                  : <Avatar /> // Avatar por defecto si no hay autor
               }
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
-              title={`Dr. ${post.author}`}
-              subheader={post.date}
+              title={post.autor || "Anónimo"} // Nombre del autor o "Anónimo" si no está disponible
+              subheader={new Date(post.fecha).toLocaleString()} // Formatea la fecha
             />
             <CardContent>
               <Typography variant="body2" color="text.secondary">
-                {post.content}
+                {post.texto}
               </Typography>
             </CardContent>
             <CardActions disableSpacing>
-              {/* Aquí puedes agregar acciones como 'Me gusta', 'Comentar', etc. */}
             </CardActions>
           </Card>
         </Grid>
       ))}
-    </Grid>
-  );
+
+      </Grid>
+    );
 };
