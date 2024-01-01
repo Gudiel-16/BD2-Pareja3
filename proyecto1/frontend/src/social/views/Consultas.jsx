@@ -1,16 +1,73 @@
-import React, { useState } from 'react';
-import { List, ListItem, ListItemText, Box, Typography, Divider, Grid } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { List, ListItem, ListItemText, Box, Typography, Grid } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchConsultas } from '../../store/social';
 
 const consultas = [
-  { id: 1, titulo: 'Consulta 1', resultado: { pediatrico: 92200, medianaEdad: 8500, geriatrico: 25000 } },
-  { id: 2, titulo: 'Consulta 2', resultado: { pediatrico: 88000, medianaEdad: 7600, geriatrico: 29000 } },
-  { id: 3, titulo: 'Consulta 3', resultado: { pediatrico: 94000, medianaEdad: 8000, geriatrico: 27000 } },
-  { id: 4, titulo: 'Consulta 4', resultado: { pediatrico: 91000, medianaEdad: 8200, geriatrico: 26000 } },
-  { id: 5, titulo: 'Consulta 5', resultado: { pediatrico: 96000, medianaEdad: 8400, geriatrico: 28000 } },
+  { id: 1, titulo: 'Consulta 1'},
+  { id: 2, titulo: 'Consulta 2'},
+  { id: 3, titulo: 'Consulta 3'},
+  { id: 4, titulo: 'Consulta 4'},
+  { id: 5, titulo: 'Consulta 5'},
+
 ];
 
+
 export const VistaConsultas = () => {
-  const [consultaSeleccionada, setConsultaSeleccionada] = useState(consultas[0]);
+  const [consultaSeleccionada, setConsultaSeleccionada] = useState(null);
+
+  const dispatch = useDispatch();
+  const { datosConsultas, loading, error } = useSelector((state) => state.consultas);
+  console.log(datosConsultas)
+
+  // Manejador para seleccionar una consulta y cargar sus datos
+  const handleSelectConsulta = (consultaId) => {
+    setConsultaSeleccionada(consultaId);
+    dispatch(fetchConsultas(consultaId));
+  };
+
+  useEffect(() => {
+    if (consultaSeleccionada) {
+      dispatch(fetchConsultas(consultaSeleccionada.id));
+    }
+  }, [dispatch, consultaSeleccionada]);
+
+  const renderConsultaResultado = () => {
+    if (!datosConsultas) return null;
+  
+    if (consultaSeleccionada === 1) {
+      return datosConsultas.map((dato) => (
+        <Typography key={dato.categoria}>
+          {dato.categoria}: {dato.total?.toLocaleString()}
+        </Typography>
+      ));
+    } else if (consultaSeleccionada === 2) {
+      return datosConsultas.map((dato) => (
+        <Typography key={dato.idHabitacion}>
+          {dato.habitacion}: {dato.cantidad?.toLocaleString()}
+        </Typography>
+      ));
+    }else if (consultaSeleccionada === 3) {
+      return datosConsultas.map((dato) => (
+        <Typography key={dato.idGenero}>
+          {dato.genero}: {dato.cantidad?.toLocaleString()}
+        </Typography>
+      ));
+    }else if (consultaSeleccionada === 4) {
+      return datosConsultas.map((dato) => (
+        <Typography key={dato.idEdad}>
+          Edad {dato.edad}: {dato.cantidad?.toLocaleString()}
+        </Typography>
+      ));
+    }else if (consultaSeleccionada === 5) {
+      return datosConsultas.map((dato) => (
+        <Typography key={dato.idEdad}>
+          Edad {dato.edad}: {dato.cantidad?.toLocaleString()}
+        </Typography>
+      ));
+    }
+  };
+  
 
   return (
     <Grid container spacing={2}>
@@ -20,8 +77,8 @@ export const VistaConsultas = () => {
           {consultas.map((consulta) => (
             <ListItem
               button
-              selected={consultaSeleccionada.id === consulta.id}
-              onClick={() => setConsultaSeleccionada(consulta)}
+              selected={consultaSeleccionada === consulta.id}
+              onClick={() => handleSelectConsulta(consulta.id)}
               key={consulta.id}
             >
               <ListItemText primary={consulta.titulo} />
@@ -30,13 +87,18 @@ export const VistaConsultas = () => {
         </List>
       </Grid>
       <Grid item xs={12} sm={8}>
-        <Typography variant="h6">Resultado de la Consulta</Typography>
-        <Box sx={{ p: 2, borderLeft: 1, borderColor: 'divider' }}>
-          <Typography>Pediátrico: {consultaSeleccionada.resultado.pediatrico.toLocaleString()}</Typography>
-          <Typography>Mediana Edad: {consultaSeleccionada.resultado.medianaEdad.toLocaleString()}</Typography>
-          <Typography>Geríatrico: {consultaSeleccionada.resultado.geriatrico.toLocaleString()}</Typography>
-        </Box>
+        {consultaSeleccionada && (
+          <>
+            <Typography variant="h6">Resultado de la Consulta</Typography>
+            <Box sx={{ p: 2, borderLeft: 1, borderColor: 'divider' }}>
+              {loading && <p>Cargando...</p>}
+              {renderConsultaResultado()}
+            </Box>
+          </>
+        )}
       </Grid>
     </Grid>
   );
 };
+
+
