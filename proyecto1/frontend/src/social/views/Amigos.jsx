@@ -1,7 +1,9 @@
-import React, { useEffect } from 'react';
-import { Grid, Card, CardContent, Typography, CardActions, Button, CardMedia } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Grid, Card, CardContent, Typography, CardActions, Button, CardMedia, Avatar } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { obtenerAmigos } from '../../store/social';
+import { PerfilAmigo } from './Profile';
+import { CenterFocusStrong } from '@mui/icons-material';
 
 
 export const ListaAmigos = () => {
@@ -10,6 +12,16 @@ export const ListaAmigos = () => {
     console.log(`Eliminar amigo con id: ${idAmigo}`);
   };
 
+  //const [ modalOpen, setModalOpen ] = useState(false);
+  const [amigoSeleccionado, setAmigoSeleccionado] = useState(null);
+
+  const handleOpenModal = (amigo) => {
+    setAmigoSeleccionado(amigo);
+  };
+
+  const handleCloseModal = () => {
+    setAmigoSeleccionado(null);
+  };
 
   const userString = localStorage.getItem('user');
   const user = userString ? JSON.parse(userString) : null;
@@ -28,30 +40,29 @@ export const ListaAmigos = () => {
         <Typography variant='h4' gutterBottom>Mis amigos:</Typography>
       </Grid>
       {amigos.map((amigo) => (
-        <Grid item xs={12} sm={6} md={4} key={amigo.id_doctor}>
+        <Grid item xs={12} sm={6} md={4} key={amigo.id_doctor} >
           <Card>
-            <CardMedia
-              component="img"
-              height="140"
-              image={amigo.imagen}
-              alt={`Imagen de ${amigo.nombre}`}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="div">
-                {amigo.nombre}
-              </Typography>
-              <Button size="small" color="primary" href={amigo.perfilUrl}>
-                Página de perfil
-              </Button>
-            </CardContent>
-            <CardActions>
-              <Button size="small" color="secondary" onClick={() => handleEliminarAmigo(amigo.id)}>
-                Suprimir
-              </Button>
-            </CardActions>
+            <Avatar style={{ width: 100, height: 100 }} />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  {amigo.nombre}
+                </Typography>
+                <Button size="small" color="primary" onClick={() => handleOpenModal(amigo)}>
+                  Página de perfil
+                </Button>
+              </CardContent>
           </Card>
         </Grid>
       ))}
+      
+      {/* Solo renderiza un componente PerfilAmigo */}
+      {amigoSeleccionado && (
+        <PerfilAmigo
+          open={Boolean(amigoSeleccionado)}
+          onClose={handleCloseModal}
+          amigo={amigoSeleccionado}
+        />
+      )}
     </Grid>
   );
 };

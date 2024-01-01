@@ -2,12 +2,11 @@ import { Card, CardContent, CardHeader, Avatar, Typography, CardActions, IconBut
 import { MoreVert as MoreVertIcon } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { crearPublicacion, fetchPublicaciones} from '../../store/social/publicacion/publicacionThunks';
+import { crearPublicacion, fetchPublicaciones, fetchPublicacionesDeAmigos } from '../../store/social/publicacion/publicacionThunks';
 
 export const Publicaciones = () => {
     const dispatch = useDispatch();
-
-    const { publicaciones, loading, error } = useSelector((state) => state.publicaciones);
+    const { publicaciones, publicacionesAmigos,loading, error } = useSelector((state) => state.publicaciones);
     const [newPostContent, setNewPostContent] = useState('');
 
     const userString = localStorage.getItem('user');
@@ -15,6 +14,7 @@ export const Publicaciones = () => {
 
     useEffect(() => {
       dispatch(fetchPublicaciones(id_doctor));
+      dispatch(fetchPublicacionesDeAmigos(id_doctor));
     }, [dispatch, id_doctor]);
 
     const handlePostChange = (event) => {
@@ -82,7 +82,28 @@ export const Publicaciones = () => {
           </Card>
         </Grid>
       ))}
-
+      {publicacionesAmigos.map((post, index) => (
+        <Grid item key={index} xs={12} md={6}>
+          <Card>
+            <CardHeader
+              avatar={
+                post.autor
+                  ? <Avatar>{post.autor[0]}</Avatar> // Primer letra del nombre del autor
+                  : <Avatar /> // Avatar por defecto si no hay autor
+              }
+              title={post.autor || "Anónimo"} // Nombre del autor o "Anónimo" si no está disponible
+              subheader={new Date(post.fecha).toLocaleString()} // Formatea la fecha
+            />
+            <CardContent>
+              <Typography variant="body2" color="text.secondary">
+                {post.texto}
+              </Typography>
+            </CardContent>
+            <CardActions disableSpacing>
+            </CardActions>
+          </Card>
+        </Grid>
+      ))}
       </Grid>
     );
 };
